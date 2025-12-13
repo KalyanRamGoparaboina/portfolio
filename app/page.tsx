@@ -1,26 +1,61 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Head from "next/head";
-import { ArrowRight, Download, Github, Linkedin, Mail, MapPin, Phone, ExternalLink, GraduationCap, Award, Briefcase, Code2, Terminal, Database, Brain, Zap, TrendingUp, Target, Sparkles, Sun, Battery, Leaf, X, MessageCircle, Calendar, CheckCircle, Send, User, Clock, Star, Shield, Rocket } from "lucide-react";
+import { 
+  ArrowRight, Download, Github, Linkedin, Mail, MapPin, Phone, 
+  ExternalLink, GraduationCap, Award, Briefcase, Code2, Terminal, 
+  Database, Brain, Zap, TrendingUp, Target, Sparkles, Sun, Battery, 
+  Leaf, X, MessageCircle, Calendar, CheckCircle, Send, User, Clock, 
+  Star, Shield, Rocket, Users, Lightbulb, Hourglass 
+} from "lucide-react";
 
 export default function Home() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  // --- STATE ---
+  // Removed mousePosition state to fix lag
   const [isVisible, setIsVisible] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("about");
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [selectedCert, setSelectedCert] = useState<string | null>(null);
-  const [hoveredCert, setHoveredCert] = useState<string | null>(null);
   const [showWhatsApp, setShowWhatsApp] = useState(false);
   const [whatsappPopup, setWhatsappPopup] = useState(false);
   const [chatMessage, setChatMessage] = useState("");
   const [chatName, setChatName] = useState("");
+  
+  // Hydration fix for random particles
+  const [particles, setParticles] = useState<Array<{left: string, top: string, delay: string, duration: string}>>([]);
 
+  // --- REFS (PERFORMANCE FIX) ---
+  const backgroundRef = useRef<HTMLDivElement>(null);
+
+  // --- EFFECT: PERFORMANCE OPTIMIZED MOUSE TRACKING ---
+  useEffect(() => {
+    // This updates the background gradient DIRECTLY on the DOM element
+    // bypassing React's render cycle to eliminate lag completely.
+    const handleMouse = (e: MouseEvent) => {
+      if (backgroundRef.current) {
+        const x = e.clientX;
+        const y = e.clientY;
+        backgroundRef.current.style.background = `radial-gradient(600px at ${x}px ${y}px, rgba(29, 78, 216, 0.15), transparent 80%)`;
+      }
+    };
+    
+    window.addEventListener('mousemove', handleMouse);
+    return () => window.removeEventListener('mousemove', handleMouse);
+  }, []);
+
+  // --- EFFECT: INITIALIZATION & SCROLL ---
   useEffect(() => {
     setIsVisible(true);
-    const handleMouse = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
+    
+    // Generate particles on client side only to avoid hydration mismatch
+    const newParticles = [...Array(20)].map(() => ({
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      delay: `${Math.random() * 5}s`,
+      duration: `${5 + Math.random() * 10}s`
+    }));
+    setParticles(newParticles);
+
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
       
@@ -40,13 +75,11 @@ export default function Home() {
       });
       if (current) setActiveSection(current);
     };
-    window.addEventListener('mousemove', handleMouse);
-    window.addEventListener('scroll', handleScroll);
     
+    window.addEventListener('scroll', handleScroll, { passive: true });
     setTimeout(() => setShowWhatsApp(true), 3000);
     
     return () => {
-      window.removeEventListener('mousemove', handleMouse);
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
@@ -62,9 +95,9 @@ export default function Home() {
   };
 
   const seoData = {
-    title: "Kalyan Ram Goparaboina - Data Scientist & AI Specialist | Portfolio",
-    description: "Computer Science Graduate specializing in Data Science, AI/ML, and Full-Stack Development. Expert in Python, Flask, React, Deep Learning, and Cloud Technologies. Available for hire.",
-    keywords: "Kalyan Ram Goparaboina, Data Scientist, AI Specialist, Machine Learning Engineer, Python Developer, Flask Developer, React Developer, Computer Vision, Data Science, Telangana Developer, Fresh Graduate 2025",
+    title: "Kalyan Ram Goparaboina - Data Scientist & AI Specialist | Python Full-Stack Developer Portfolio",
+    description: "Kalyan Ram Goparaboina - Computer Science Graduate from Telangana specializing in Data Science, AI/ML, Deep Learning, and Python Full-Stack Development. Expert in Machine Learning, OpenCV, Flask, React, Computer Vision, and Cloud Technologies. Available for hire - Fresh Graduate 2025.",
+    keywords: "Kalyan Ram Goparaboina, Kalyanram Goparaboina, Kalyan Goparaboina, Data Scientist India, AI Specialist, Machine Learning Engineer, Python Developer, Flask Developer, React Developer, Computer Vision Expert, Deep Learning, Data Science, AI ML Developer, Full Stack Python Developer, Telangana Developer, Fresh Graduate 2025, Kamala Institute Alumni, AI Jobs India, Data Science Jobs, Python Jobs",
     url: "https://kalyanramgoparaboina.com",
     image: "/og-image.jpg"
   };
@@ -75,7 +108,6 @@ export default function Home() {
       issuer: "Oracle University", 
       year: "2025", 
       level: "Professional", 
-      image: "/certificates/generative-ai.jpg",
       date: "October 28, 2025",
       description: "Oracle Cloud Infrastructure 2025 Certified Generative AI Professional"
     },
@@ -84,7 +116,6 @@ export default function Home() {
       issuer: "ExcelR Solutions", 
       year: "2025", 
       level: "Advanced", 
-      image: "/certificates/data-science-excelr.jpg",
       date: "2025",
       description: "Comprehensive training in Machine Learning, R, and Python for Data Science applications"
     },
@@ -93,7 +124,6 @@ export default function Home() {
       issuer: "Kamala Institute & Brain O Vision", 
       year: "2024", 
       level: "Certified", 
-      image: "/certificates/data-science-ml.jpg",
       date: "April 18-20, 2024",
       description: "Three-day intensive workshop on Data Science & Machine Learning"
     },
@@ -102,19 +132,25 @@ export default function Home() {
       issuer: "Brain O Vision", 
       year: "2023", 
       level: "Certified", 
-      image: "/certificates/python-fullstack.jpg",
       date: "2023",
       description: "Complete Python Full Stack Development including Flask, Django, and modern web technologies"
     },
     { 
       name: "AI Vector Certification", 
-      issuer: "AI Vector", 
+      issuer: "Oracle University",
       year: "2025", 
       level: "Certified", 
-      image: "/certificates/ai-variant.jpg",
       date: "2025",
       description: "Advanced AI and Machine Learning certification program"
     }
+  ];
+
+  const softSkills = [
+    { name: "Communication Skills", level: 95, color: "#10B981" },
+    { name: "Teamwork & Collaboration", level: 95, color: "#8B5CF6" },
+    { name: "Problem-Solving Ability", level: 75, color: "#F59E0B" },
+    { name: "Adaptability & Quick Learning", level: 89, color: "#3B82F6" },
+    { name: "Time Management", level: 95, color: "#EC4899" }
   ];
 
   return (
@@ -157,6 +193,7 @@ export default function Home() {
         <meta name="theme-color" content="#000000" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
         
@@ -166,6 +203,7 @@ export default function Home() {
             "@context": "https://schema.org",
             "@type": "Person",
             "name": "Kalyan Ram Goparaboina",
+            "alternateName": ["Kalyanram Goparaboina", "Kalyan Goparaboina"],
             "url": seoData.url,
             "image": seoData.image,
             "jobTitle": "Data Scientist & AI Specialist",
@@ -174,7 +212,7 @@ export default function Home() {
             "email": "goparaboinakalyanram@gmail.com",
             "telephone": "+91-81061-42645",
             "alumniOf": { "@type": "Organization", "name": "Kamala Institute of Technology and Science" },
-            "knowsAbout": ["Python", "Flask", "React", "Machine Learning", "Deep Learning", "Computer Vision", "Data Science", "Full Stack Development"],
+            "knowsAbout": ["Python", "Flask", "React", "Machine Learning", "Deep Learning", "Computer Vision", "Data Science", "Full Stack Development", "AI/ML", "OpenCV", "TensorFlow", "Neural Networks"],
             "sameAs": ["https://github.com/KalyanRamGoparaboina", "https://www.linkedin.com/in/kalyan-ram-goparaboina-90719435a"]
           })}
         </script>
@@ -214,6 +252,7 @@ export default function Home() {
                   setWhatsappPopup(false);
                 }}
                 className="absolute -top-3 -right-3 p-2.5 rounded-full bg-red-500 hover:bg-red-600 transition-all z-[60] shadow-2xl border-4 border-black hover:scale-110"
+                aria-label="Close WhatsApp popup"
               >
                 <X className="w-5 h-5 text-white" />
               </button>
@@ -266,6 +305,7 @@ export default function Home() {
                       value={chatName}
                       onChange={(e) => setChatName(e.target.value)}
                       className="w-full bg-gray-800 border border-gray-700 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all"
+                      aria-label="Enter your name"
                     />
                   </div>
 
@@ -277,12 +317,14 @@ export default function Home() {
                       onChange={(e) => setChatMessage(e.target.value)}
                       rows={3}
                       className="w-full bg-gray-800 border border-gray-700 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all resize-none"
+                      aria-label="Enter your message"
                     />
                   </div>
 
                   <button
                     onClick={handleWhatsAppSend}
                     className="w-full bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-white font-bold py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 shadow-lg hover:shadow-green-500/50 transition-all hover:scale-105 group"
+                    aria-label="Send message on WhatsApp"
                   >
                     <Send className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     <span>Send Message on WhatsApp</span>
@@ -302,6 +344,7 @@ export default function Home() {
           <button
             onClick={() => setWhatsappPopup(true)}
             className="fixed bottom-6 right-6 z-40 group"
+            aria-label="Open WhatsApp chat"
           >
             <div className="relative">
               <div className="absolute inset-0 bg-green-500 rounded-full animate-ping opacity-75"></div>
@@ -320,44 +363,6 @@ export default function Home() {
           </button>
         )}
 
-        {/* Certificate Modal */}
-        {selectedCert && (
-          <div className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4 backdrop-blur-sm" onClick={() => setSelectedCert(null)}>
-            <div className="relative max-w-4xl w-full">
-              <button 
-                onClick={() => setSelectedCert(null)} 
-                className="absolute -top-12 right-0 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all"
-              >
-                <X className="w-6 h-6" />
-              </button>
-              <div className="relative w-full rounded-2xl overflow-hidden border-2 border-white/20 bg-black shadow-2xl">
-                <img
-                  src={selectedCert}
-                  alt="Certificate"
-                  className="w-full h-auto max-h-[80vh] object-contain"
-                  onClick={(e) => e.stopPropagation()}
-                />
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Certificate Hover Preview */}
-        {hoveredCert && (
-          <div className="fixed inset-0 bg-black/80 z-40 flex items-center justify-center p-4 backdrop-blur-sm pointer-events-none">
-            <div className="relative max-w-3xl w-full animate-fadeIn">
-              <div className="relative w-full rounded-2xl overflow-hidden border-2 border-yellow-500/50 shadow-2xl shadow-yellow-500/30">
-                <img
-                  src={hoveredCert}
-                  alt="Certificate Preview"
-                  className="w-full h-auto max-h-[70vh] object-contain"
-                />
-              </div>
-              <p className="text-center mt-4 text-yellow-400 font-semibold animate-pulse">Hover to preview • Click to view full size</p>
-            </div>
-          </div>
-        )}
-
         {/* Scroll Progress Bar */}
         <div className="fixed top-0 left-0 right-0 h-1 bg-white/10 z-50">
           <div 
@@ -366,25 +371,27 @@ export default function Home() {
           />
         </div>
 
-        {/* Animated Background */}
-        <div className="fixed inset-0 opacity-30 pointer-events-none transition-all duration-1000 ease-out"
+        {/* Animated Background (REF OPTIMIZED) */}
+        <div 
+          ref={backgroundRef}
+          className="fixed inset-0 opacity-30 pointer-events-none transition-none ease-out"
           style={{
-            background: `radial-gradient(600px at ${mousePosition.x}px ${mousePosition.y}px, rgba(29, 78, 216, 0.15), transparent 80%)`
+            background: `radial-gradient(600px at 50% 50%, rgba(29, 78, 216, 0.15), transparent 80%)`
           }}
         />
 
-        {/* Floating Particles - Client Only */}
+        {/* Floating Particles - Client Only (HYDRATION FIX) */}
         {isVisible && (
           <div className="fixed inset-0 pointer-events-none overflow-hidden" suppressHydrationWarning>
-            {[...Array(20)].map((_, i) => (
+            {particles.map((p, i) => (
               <div
                 key={i}
                 className="absolute w-1 h-1 bg-blue-500/30 rounded-full animate-float"
                 style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                  animationDelay: `${Math.random() * 5}s`,
-                  animationDuration: `${5 + Math.random() * 10}s`
+                  left: p.left,
+                  top: p.top,
+                  animationDelay: p.delay,
+                  animationDuration: p.duration
                 }}
                 suppressHydrationWarning
               />
@@ -462,7 +469,7 @@ export default function Home() {
                         <span className="text-xs font-bold text-emerald-300 uppercase tracking-wide">Education</span>
                       </div>
                       <h3 className="text-sm sm:text-base font-bold text-white mb-0.5">B.E. Computer Science</h3>
-                      <p className="text-xs text-gray-400">Kamala Institute, Telangana</p>
+                      <p className="text-xs text-gray-400">Kamala Institute of Technology & Science, Telangana</p>
                       <p className="text-xs text-gray-500 mt-0.5">2021 - 2025</p>
                     </div>
                     <div className="flex items-center justify-center">
@@ -478,7 +485,7 @@ export default function Home() {
                 <div className="grid grid-cols-3 gap-2">
                   {[
                     { icon: Brain, label: "AI Accuracy", value: "90%", color: "rose" },
-                    { icon: Zap, label: "OCR Engine", value: "95%", color: "blue" },
+                    { icon: Zap, label: "ML", value: "95%", color: "blue" },
                     { icon: TrendingUp, label: "Projects", value: "5+", color: "purple" }
                   ].map((item, idx) => (
                     <div key={idx} className={`group p-3 rounded-xl bg-gradient-to-br from-${item.color}-950/60 to-${item.color}-950/30 border border-${item.color}-500/40 hover:border-${item.color}-500/70 hover:scale-110 hover:-translate-y-1 transition-all duration-500 cursor-default text-center backdrop-blur-sm`}>
@@ -550,10 +557,10 @@ export default function Home() {
           </div>
         </section>
 
-        {/* About Me Section - NEWLY ADDED */}
+        {/* About Me Section - INCREASED SIZE */}
         <section className="py-10 sm:py-16 px-4 sm:px-6 border-t border-white/10 bg-black/50 relative overflow-hidden">
            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-blue-500/5 blur-3xl pointer-events-none"></div>
-           <div className="max-w-4xl mx-auto relative z-10">
+           <div className="max-w-6xl mx-auto relative z-10">
              <div className="bg-gradient-to-br from-gray-900 via-gray-900 to-black p-6 sm:p-8 rounded-3xl border border-white/10 shadow-2xl backdrop-blur-xl">
                <div className="flex flex-col md:flex-row items-center gap-8">
                  {/* Left: Avatar/Icon */}
@@ -570,13 +577,13 @@ export default function Home() {
                      <Sparkles className="w-5 h-5 text-purple-400 animate-pulse" />
                    </h2>
                    <p className="text-gray-300 text-sm sm:text-base leading-relaxed mb-4">
-                     I am a detail-oriented <strong>Computer Science Engineering graduate</strong> (Class of 2025) with a strong foundation in Python, Data Science, and Web Development. I have a proven track record of building functional applications, ranging from AI-based detection systems to full-stack web platforms.
+                     I am a detail-oriented <strong>Computer Science Engineering graduate</strong> with a strong foundation in Python, Data Science, and Web Development. I have a proven track record of building functional applications, ranging from AI-based detection systems to full-stack web platforms.
                    </p>
                    <p className="text-gray-400 text-sm leading-relaxed">
                      Passionate about leveraging Machine Learning and software engineering principles to solve real-world problems. Currently based in Telangana, India, and eager to drive innovation in the tech industry.
                    </p>
                    <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 mt-4">
-                     {["Python", "Data Science", "Web Development", "AI/ML"].map((tag, i) => (
+                     {["Python", "Data Science", "Analytics", "AI/ML"].map((tag, i) => (
                         <span key={i} className="px-3 py-1 text-xs font-semibold text-blue-300 bg-blue-500/10 border border-blue-500/30 rounded-full">
                            #{tag}
                         </span>
@@ -627,7 +634,7 @@ export default function Home() {
                     </div>
                     <div className="flex-1">
                       <h3 className="text-lg sm:text-xl font-bold text-white mb-1.5">B.E. Computer Science Engineering</h3>
-                      <p className="text-sm sm:text-base text-blue-300 font-semibold mb-1">Kamala Institute of Technology, Telangana</p>
+                      <p className="text-sm sm:text-base text-blue-300 font-semibold mb-1">Kamala Institute of Technology & Science, Telangana</p>
                       <p className="text-xs text-blue-400/80 italic mb-1">(Affiliated by JNTUH)</p>
                       <div className="flex flex-wrap items-center gap-3 mb-3">
                         <span className="px-2.5 py-1 rounded-full bg-blue-500/20 border border-blue-500/40 text-blue-300 text-xs font-bold">2021 - 2025</span>
@@ -777,7 +784,7 @@ export default function Home() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
               
-              {/* Solar Project */}
+              {/* Solar Power Generation Project */}
               <div className="group md:col-span-2 relative p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-yellow-950/50 via-orange-950/50 to-yellow-950/50 border border-yellow-500/30 hover:border-yellow-500/60 hover:scale-105 hover:-translate-y-2 transition-all duration-500 overflow-hidden backdrop-blur-sm">
                 <div className="absolute top-0 right-0 w-48 h-48 bg-yellow-500/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
                 <div className="relative z-10">
@@ -789,7 +796,7 @@ export default function Home() {
                       <div className="flex-1 min-w-0">
                         <div className="flex flex-wrap items-center gap-2 mb-1.5">
                           <h3 className="text-xl sm:text-2xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-yellow-400 group-hover:to-orange-400 transition-all duration-300">
-                            Smart Solar Energy Monitoring
+                            Solar Power Generation
                           </h3>
                           <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold animate-pulse whitespace-nowrap">
                             🌱 ECO
@@ -798,13 +805,13 @@ export default function Home() {
                         <p className="text-xs text-yellow-300 font-semibold">Renewable Energy Platform</p>
                       </div>
                     </div>
-                    <a href="https://github.com/KalyanRamGoparaboina" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-black/50 border border-white/10 hover:bg-black/70 hover:scale-125 hover:rotate-12 transition-all duration-300 flex-shrink-0">
+                    <a href="https://github.com/KalyanRamGoparaboina" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-black/50 border border-white/10 hover:bg-black/70 hover:scale-125 hover:rotate-12 transition-all duration-300 flex-shrink-0" aria-label="View Solar Power Generation project on GitHub">
                       <ExternalLink className="w-4 h-4" />
                     </a>
                   </div>
 
                   <p className="text-xs sm:text-sm text-gray-300 mb-4 leading-relaxed">
-                    Solar panel monitoring with real-time tracking, ML predictive maintenance, and mobile dashboard. ESP32 integration with cloud analytics reduces maintenance costs by 40%.
+                    Solar panel monitoring with real-time tracking, ML predictive maintenance, and mobile dashboard. Cloud-driven ML insights reduce maintenance costs by 40%.
                   </p>
 
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-4 py-3 border-y border-yellow-500/20">
@@ -825,7 +832,7 @@ export default function Home() {
                   </div>
 
                   <div className="flex flex-wrap gap-1.5">
-                    {["Python", "ESP32", "ML", "Flask", "Cloud Analytics", "Dashboard"].map(tech => (
+                    {["Python", "ML", "Flask", "Cloud Analytics", "Dashboard"].map(tech => (
                       <span key={tech} className="px-2.5 py-1 rounded-lg bg-black/30 border border-yellow-500/20 text-yellow-300 text-xs font-medium hover:bg-black/50 hover:scale-110 transition-all duration-300 cursor-default">
                         {tech}
                       </span>
@@ -842,7 +849,7 @@ export default function Home() {
                     <div className="p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                       <Brain className="w-5 sm:w-6 h-5 sm:h-6 text-rose-400" />
                     </div>
-                    <a href="https://github.com/KalyanRamGoparaboina" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-black/50 border border-white/10 hover:bg-black/70 hover:scale-125 hover:rotate-12 transition-all duration-300">
+                    <a href="https://github.com/KalyanRamGoparaboina" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-black/50 border border-white/10 hover:bg-black/70 hover:scale-125 hover:rotate-12 transition-all duration-300" aria-label="View AI Emotion Detection project on GitHub">
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                   </div>
@@ -881,7 +888,7 @@ export default function Home() {
                     <div className="p-2.5 rounded-xl bg-blue-500/10 border border-blue-500/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                       <Terminal className="w-5 sm:w-6 h-5 sm:h-6 text-blue-400" />
                     </div>
-                    <a href="https://github.com/KalyanRamGoparaboina" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-black/50 border border-white/10 hover:bg-black/70 hover:scale-125 hover:rotate-12 transition-all duration-300">
+                    <a href="https://github.com/KalyanRamGoparaboina" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-black/50 border border-white/10 hover:bg-black/70 hover:scale-125 hover:rotate-12 transition-all duration-300" aria-label="View Bus Booking System project on GitHub">
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                   </div>
@@ -919,17 +926,17 @@ export default function Home() {
                     <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                       <Code2 className="w-5 sm:w-6 h-5 sm:h-6 text-emerald-400" />
                     </div>
-                    <a href="https://github.com/KalyanRamGoparaboina" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-black/50 border border-white/10 hover:bg-black/70 hover:scale-125 hover:rotate-12 transition-all duration-300">
+                    <a href="https://github.com/KalyanRamGoparaboina" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-black/50 border border-white/10 hover:bg-black/70 hover:scale-125 hover:rotate-12 transition-all duration-300" aria-label="View Handwritten to Text Converter project on GitHub">
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                   </div>
 
                   <h3 className="text-base sm:text-lg font-bold text-white mb-2.5">Handwritten to Text Converter</h3>
-                  <p className="text-xs text-gray-300 mb-3 leading-relaxed">Handwritten-to-text engine using Tesseract OCR achieving 95%+ accuracy.</p>
+                  <p className="text-xs text-gray-300 mb-3 leading-relaxed">Handwritten-to-text engine using Tesseract OCR achieving 90%+ accuracy.</p>
 
                   <div className="grid grid-cols-2 gap-2 mb-3 py-2.5 border-y border-emerald-500/20">
                     {[
-                      { label: "Accuracy", value: "95%" },
+                      { label: "Accuracy", value: "90%" },
                       { label: "Interface", value: "Web UI" }
                     ].map((stat, i) => (
                       <div key={i} className="hover:scale-110 transition-transform duration-300 cursor-default text-center">
@@ -957,7 +964,7 @@ export default function Home() {
                     <div className="p-2.5 rounded-xl bg-violet-500/10 border border-violet-500/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                       <Database className="w-5 sm:w-6 h-5 sm:h-6 text-violet-400" />
                     </div>
-                    <a href="https://github.com/KalyanRamGoparaboina/Restaurant-Menu" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-black/50 border border-white/10 hover:bg-black/70 hover:scale-125 hover:rotate-12 transition-all duration-300">
+                    <a href="https://github.com/KalyanRamGoparaboina/Restaurant-Menu" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-black/50 border border-white/10 hover:bg-black/70 hover:scale-125 hover:rotate-12 transition-all duration-300" aria-label="View Restaurant Menu Platform project on GitHub">
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                   </div>
@@ -1002,19 +1009,19 @@ export default function Home() {
                 {
                   category: "Programming & Scripting",
                   skills: [
-                    { name: "Python", level: 75, color: "#3B82F6" },
-                    { name: "SQL", level: 70, color: "#A855F7" },
+                    { name: "Python", level: 80, color: "#3B82F6" },
+                    { name: "SQL", level: 85, color: "#A855F7" },
                     { name: "JavaScript", level: 65, color: "#FACC15" },
-                    { name: "HTML/CSS", level: 80, color: "#F97316" }
+                    { name: "HTML/CSS", level: 75, color: "#F97316" }
                   ]
                 },
                 {
                   category: "AI & Machine Learning",
                   skills: [
-                    { name: "Deep Learning", level: 70, color: "#F43F5E" },
-                    { name: "Tableau", level: 70, color: "#EC4899" },
-                    { name: "NLP & OCR", level: 65, color: "#A855F7" },
-                    { name: "Data Science (Pandas/NumPy)", level: 75, color: "#3B82F6" }
+                    { name: "Deep Learning", level: 75, color: "#F43F5E" },
+                    { name: "Tableau", level: 80, color: "#EC4899" },
+                    { name: "NLP & OCR", level: 70, color: "#A855F7" },
+                    { name: "Data Science (Pandas/NumPy)", level: 80, color: "#3B82F6" }
                   ]
                 }
               ].map((section, idx) => (
@@ -1049,7 +1056,38 @@ export default function Home() {
               ))}
             </div>
 
-            {/* REDESIGNED CERTIFICATIONS */}
+            {/* Soft Skills Section */}
+             <div className="group p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-neutral-900/80 to-neutral-900/40 border border-white/10 hover:border-white/20 hover:scale-[1.02] transition-all duration-500 relative overflow-hidden backdrop-blur-sm mb-12">
+               <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/5 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
+               <div className="relative z-10">
+                 <h3 className="text-lg sm:text-xl font-bold text-white mb-5 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-green-400 group-hover:to-teal-400 transition-all duration-500 flex items-center gap-2">
+                   <Users className="w-5 h-5 text-green-400" />
+                   Soft Skills Expertise
+                 </h3>
+                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                   {softSkills.map((skill, i) => (
+                     <div key={i} className="group/skill">
+                        <div className="flex justify-between items-center mb-1.5">
+                          <span className="text-xs sm:text-sm font-semibold text-gray-300 group-hover/skill:text-white transition-colors">{skill.name}</span>
+                          <span className="text-xs font-bold group-hover/skill:scale-125 transition-transform" style={{ color: skill.color }}>{skill.level}%</span>
+                        </div>
+                        <div className="h-2 bg-neutral-800 rounded-full overflow-hidden group-hover/skill:shadow-lg transition-all">
+                          <div 
+                            className="h-full rounded-full transition-all duration-1000 ease-out group-hover/skill:animate-pulse"
+                            style={{ 
+                              width: `${skill.level}%`,
+                              background: `linear-gradient(90deg, ${skill.color}, ${skill.color}99)`,
+                              animation: 'slideIn 2s ease-out'
+                            }}
+                          />
+                        </div>
+                     </div>
+                   ))}
+                 </div>
+               </div>
+             </div>
+
+            {/* Certifications (EXACT DESIGN RESTORED) */}
             <div className="relative">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
@@ -1058,7 +1096,6 @@ export default function Home() {
                   </div>
                   <div>
                     <h3 className="text-2xl sm:text-3xl font-black text-white">Professional Certifications</h3>
-                    <p className="text-xs text-gray-400 mt-1">Hover to preview • Click to view full size</p>
                   </div>
                 </div>
               </div>
@@ -1067,10 +1104,7 @@ export default function Home() {
                 {certificates.map((cert, idx) => (
                   <div
                     key={idx}
-                    onMouseEnter={() => setHoveredCert(cert.image)}
-                    onMouseLeave={() => setHoveredCert(null)}
-                    onClick={() => setSelectedCert(cert.image)}
-                    className="group/cert relative p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-yellow-950/30 via-orange-950/30 to-red-950/30 border border-yellow-500/20 hover:border-yellow-500/60 transition-all duration-500 cursor-pointer overflow-hidden hover:scale-105 hover:-translate-y-2 backdrop-blur-sm"
+                    className="group/cert relative p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-yellow-950/30 via-orange-950/30 to-red-950/30 border border-yellow-500/20 hover:border-yellow-500/60 transition-all duration-500 cursor-default overflow-hidden hover:scale-105 hover:-translate-y-2 backdrop-blur-sm"
                   >
                     <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/0 to-orange-500/0 group-hover/cert:from-yellow-500/10 group-hover/cert:to-orange-500/10 transition-all duration-500"></div>
                     
@@ -1106,15 +1140,6 @@ export default function Home() {
                         <Sparkles className="w-3 h-3 text-yellow-400 group-hover/cert:rotate-180 transition-transform duration-500" />
                         <span className="text-xs font-semibold text-yellow-400">{cert.level}</span>
                       </div>
-
-                      <div className="mt-4 pt-3 border-t border-yellow-500/20">
-                        <div className="flex items-center justify-between text-xs">
-                          <span className="text-gray-500 group-hover/cert:text-yellow-400 transition-colors">
-                            {hoveredCert === cert.image ? 'Previewing...' : 'View Certificate'}
-                          </span>
-                          <ExternalLink className="w-3.5 h-3.5 text-yellow-400 group-hover/cert:translate-x-1 transition-transform" />
-                        </div>
-                      </div>
                     </div>
                   </div>
                 ))}
@@ -1139,7 +1164,7 @@ export default function Home() {
                     <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-4 border-blue-600 animate-pulse"></div>
                   </div>
                 </div>
-                <h2 className="text-3xl sm:text-4xl font-black text-white mb-2 animate-pulse">
+                <h2 className="text-3xl sm:text-4xl font-black text-white mb-2">
                   Let's Build Something Amazing
                 </h2>
                 <p className="text-blue-100 text-sm sm:text-base max-w-2xl mx-auto">
@@ -1231,6 +1256,7 @@ export default function Home() {
                     rel="noopener noreferrer"
                     onClick={contact.onClick}
                     className={`group relative p-5 rounded-2xl bg-gradient-to-br ${contact.gradient} overflow-hidden transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:shadow-2xl cursor-pointer`}
+                    aria-label={`Contact via ${contact.title}`}
                   >
                     <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-all duration-500"></div>
                     <div className="relative z-10">
@@ -1252,13 +1278,14 @@ export default function Home() {
                   href="/KalyanRamGoparaboina.pdf" 
                   download 
                   className="group inline-flex items-center gap-3 px-8 sm:px-12 py-4 sm:py-5 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-2xl font-black text-base sm:text-lg hover:shadow-2xl hover:shadow-purple-500/50 hover:scale-110 transition-all duration-500 relative overflow-hidden"
+                  aria-label="Download resume"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                   <Download className="w-5 sm:w-6 h-5 sm:h-6 group-hover:animate-bounce relative z-10" />
                   <span className="relative z-10">Download Complete Resume</span>
                   <Sparkles className="w-4 sm:w-5 h-4 sm:h-5 group-hover:rotate-180 transition-transform duration-500 relative z-10" />
                 </a>
-                <div className="flex items-center justify-center gap-4 text-xs text-gray-400">
+                <div className="flex items-center justify-center gap-4 text-xs text-gray-400 flex-wrap">
                   <div className="flex items-center gap-1">
                     <CheckCircle className="w-4 h-4 text-emerald-400" />
                     <span>Available for immediate joining</span>
@@ -1270,15 +1297,15 @@ export default function Home() {
                 </div>
               </div>
             </div>
-
-            {/* Footer */}
-            <div className="mt-12 pt-6 border-t border-white/10 text-center">
-              <p className="text-xs sm:text-sm text-gray-500 hover:text-gray-300 transition-colors duration-300">
-                © 2025 Kalyan Ram Goparaboina • Crafted with ❤️ using Next.js & TypeScript
-              </p>
-            </div>
           </div>
         </section>
+
+        {/* Footer */}
+        <div className="mt-12 py-6 border-t border-white/10 text-center bg-black">
+          <p className="text-xs sm:text-sm text-gray-500 hover:text-gray-300 transition-colors duration-300">
+            © 2025 Kalyan Ram Goparaboina • Crafted with ❤️ 
+          </p>
+        </div>
 
         {/* CSS Animations */}
         <style jsx>{`
