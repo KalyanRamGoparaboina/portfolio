@@ -11,7 +11,6 @@ import {
 
 export default function Home() {
   // --- STATE ---
-  // Removed mousePosition state to fix lag
   const [isVisible, setIsVisible] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("about");
@@ -27,10 +26,8 @@ export default function Home() {
   // --- REFS (PERFORMANCE FIX) ---
   const backgroundRef = useRef<HTMLDivElement>(null);
 
-  // --- EFFECT: PERFORMANCE OPTIMIZED MOUSE TRACKING ---
+  // --- EFFECT: PERFORMANCE OPTIMIZED MOUSE TRACKING (GLOBAL BACKGROUND) ---
   useEffect(() => {
-    // This updates the background gradient DIRECTLY on the DOM element
-    // bypassing React's render cycle to eliminate lag completely.
     const handleMouse = (e: MouseEvent) => {
       if (backgroundRef.current) {
         const x = e.clientX;
@@ -38,7 +35,6 @@ export default function Home() {
         backgroundRef.current.style.background = `radial-gradient(600px at ${x}px ${y}px, rgba(29, 78, 216, 0.15), transparent 80%)`;
       }
     };
-    
     window.addEventListener('mousemove', handleMouse);
     return () => window.removeEventListener('mousemove', handleMouse);
   }, []);
@@ -47,7 +43,6 @@ export default function Home() {
   useEffect(() => {
     setIsVisible(true);
     
-    // Generate particles on client side only to avoid hydration mismatch
     const newParticles = [...Array(20)].map(() => ({
       left: `${Math.random() * 100}%`,
       top: `${Math.random() * 100}%`,
@@ -165,8 +160,6 @@ export default function Home() {
         <meta name="language" content="English" />
         <meta name="revisit-after" content="7 days" />
         <link rel="canonical" href={seoData.url} />
-        
-        {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
         <meta property="og:url" content={seoData.url} />
         <meta property="og:title" content={seoData.title} />
@@ -174,30 +167,22 @@ export default function Home() {
         <meta property="og:image" content={seoData.image} />
         <meta property="og:site_name" content="Kalyan Ram Goparaboina Portfolio" />
         <meta property="og:locale" content="en_US" />
-        
-        {/* Twitter */}
         <meta property="twitter:card" content="summary_large_image" />
         <meta property="twitter:url" content={seoData.url} />
         <meta property="twitter:title" content={seoData.title} />
         <meta property="twitter:description" content={seoData.description} />
         <meta property="twitter:image" content={seoData.image} />
         <meta property="twitter:creator" content="@KalyanRamG" />
-        
-        {/* Geo Tags */}
         <meta name="geo.region" content="IN-TG" />
         <meta name="geo.placename" content="Telangana" />
         <meta name="geo.position" content="17.3850;78.4867" />
         <meta name="ICBM" content="17.3850, 78.4867" />
-        
-        {/* Additional SEO */}
         <meta name="theme-color" content="#000000" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-        
-        {/* Schema.org */}
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
@@ -216,15 +201,9 @@ export default function Home() {
             "sameAs": ["https://github.com/KalyanRamGoparaboina", "https://www.linkedin.com/in/kalyan-ram-goparaboina-90719435a"]
           })}
         </script>
-
         <style jsx global>{`
-          html {
-            scroll-behavior: smooth;
-          }
-          * {
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-          }
+          html { scroll-behavior: smooth; }
+          * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
         `}</style>
       </Head>
 
@@ -244,23 +223,15 @@ export default function Home() {
         {whatsappPopup && (
           <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm" onClick={() => setWhatsappPopup(false)}>
             <div className="relative max-w-md w-full bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-3xl shadow-2xl border border-green-500/30" onClick={(e) => e.stopPropagation()}>
-              
-              {/* Close Button - Fixed Position */}
               <button 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setWhatsappPopup(false);
-                }}
+                onClick={(e) => { e.stopPropagation(); setWhatsappPopup(false); }}
                 className="absolute -top-3 -right-3 p-2.5 rounded-full bg-red-500 hover:bg-red-600 transition-all z-[60] shadow-2xl border-4 border-black hover:scale-110"
                 aria-label="Close WhatsApp popup"
               >
                 <X className="w-5 h-5 text-white" />
               </button>
-
-              {/* Header */}
               <div className="bg-gradient-to-r from-green-600 to-green-500 p-5 rounded-t-3xl relative">
                 <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLW9wYWNpdHk9IjAuMSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-20"></div>
-                
                 <div className="flex items-center gap-4 relative z-10">
                   <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center shadow-lg">
                     <User className="w-8 h-8 text-green-600" />
@@ -274,10 +245,7 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-
-              {/* Chat Body */}
               <div className="p-6 space-y-4">
-                {/* Incoming Message */}
                 <div className="flex gap-3">
                   <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
                     <MessageCircle className="w-4 h-4 text-white" />
@@ -294,8 +262,6 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-
-                {/* Input Form */}
                 <div className="space-y-3 pt-2">
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
@@ -308,7 +274,6 @@ export default function Home() {
                       aria-label="Enter your name"
                     />
                   </div>
-
                   <div className="relative">
                     <MessageCircle className="absolute left-3 top-3 w-4 h-4 text-gray-500" />
                     <textarea
@@ -320,7 +285,6 @@ export default function Home() {
                       aria-label="Enter your message"
                     />
                   </div>
-
                   <button
                     onClick={handleWhatsAppSend}
                     className="w-full bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-white font-bold py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 shadow-lg hover:shadow-green-500/50 transition-all hover:scale-105 group"
@@ -329,7 +293,6 @@ export default function Home() {
                     <Send className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     <span>Send Message on WhatsApp</span>
                   </button>
-
                   <p className="text-xs text-center text-gray-500">
                     🔒 Your message is private and secure
                   </p>
@@ -371,7 +334,7 @@ export default function Home() {
           />
         </div>
 
-        {/* Animated Background (REF OPTIMIZED) */}
+        {/* Animated Background */}
         <div 
           ref={backgroundRef}
           className="fixed inset-0 opacity-30 pointer-events-none transition-none ease-out"
@@ -380,7 +343,7 @@ export default function Home() {
           }}
         />
 
-        {/* Floating Particles - Client Only (HYDRATION FIX) */}
+        {/* Floating Particles */}
         {isVisible && (
           <div className="fixed inset-0 pointer-events-none overflow-hidden" suppressHydrationWarning>
             {particles.map((p, i) => (
@@ -442,7 +405,9 @@ export default function Home() {
               <div className="md:col-span-7 space-y-3">
                 
                 {/* Professional Card */}
-                <div className="group p-4 rounded-xl bg-gradient-to-br from-blue-950/60 via-purple-950/60 to-blue-950/60 border border-blue-500/40 hover:border-blue-500/70 hover:scale-105 transition-all duration-500 relative overflow-hidden backdrop-blur-sm">
+                <div 
+                  className="group relative p-4 rounded-xl bg-gradient-to-br from-blue-950/60 via-purple-950/60 to-blue-950/60 border border-blue-500/40 hover:border-blue-500/70 hover:scale-105 transition-all duration-500 overflow-hidden backdrop-blur-sm"
+                >
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                   <div className="relative z-10">
                     <div className="flex items-center gap-2 mb-2">
@@ -460,7 +425,9 @@ export default function Home() {
                 </div>
 
                 {/* Education Card */}
-                <div className="group p-4 rounded-xl bg-gradient-to-br from-emerald-950/60 to-teal-950/60 border border-emerald-500/40 hover:border-emerald-500/70 hover:scale-105 transition-all duration-500 relative overflow-hidden backdrop-blur-sm">
+                <div 
+                  className="group relative p-4 rounded-xl bg-gradient-to-br from-emerald-950/60 to-teal-950/60 border border-emerald-500/40 hover:border-emerald-500/70 hover:scale-105 transition-all duration-500 overflow-hidden backdrop-blur-sm"
+                >
                   <div className="absolute inset-0 bg-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                   <div className="relative z-10 grid grid-cols-3 gap-3">
                     <div className="col-span-2">
@@ -469,7 +436,7 @@ export default function Home() {
                         <span className="text-xs font-bold text-emerald-300 uppercase tracking-wide">Education</span>
                       </div>
                       <h3 className="text-sm sm:text-base font-bold text-white mb-0.5">B.E. Computer Science</h3>
-                      <p className="text-xs text-gray-400">Kamala Institute of Technology & Science, Telangana</p>
+                      <p className="text-xs text-gray-400">Kamala Institute, Telangana</p>
                       <p className="text-xs text-gray-500 mt-0.5">2021 - 2025</p>
                     </div>
                     <div className="flex items-center justify-center">
@@ -488,10 +455,15 @@ export default function Home() {
                     { icon: Zap, label: "ML", value: "95%", color: "blue" },
                     { icon: TrendingUp, label: "Projects", value: "5+", color: "purple" }
                   ].map((item, idx) => (
-                    <div key={idx} className={`group p-3 rounded-xl bg-gradient-to-br from-${item.color}-950/60 to-${item.color}-950/30 border border-${item.color}-500/40 hover:border-${item.color}-500/70 hover:scale-110 hover:-translate-y-1 transition-all duration-500 cursor-default text-center backdrop-blur-sm`}>
-                      <item.icon className={`w-5 h-5 text-${item.color}-400 mx-auto mb-1.5 group-hover:scale-125 group-hover:rotate-12 transition-all duration-300`} />
-                      <p className="text-xl font-black text-white">{item.value}</p>
-                      <p className="text-xs text-gray-400 font-medium">{item.label}</p>
+                    <div 
+                      key={idx} 
+                      className={`group relative p-3 rounded-xl bg-gradient-to-br from-${item.color}-950/60 to-${item.color}-950/30 border border-${item.color}-500/40 hover:border-${item.color}-500/70 hover:scale-110 hover:-translate-y-1 transition-all duration-500 cursor-default text-center backdrop-blur-sm overflow-hidden`}
+                    >
+                      <div className="relative z-10">
+                        <item.icon className={`w-5 h-5 text-${item.color}-400 mx-auto mb-1.5 group-hover:scale-125 group-hover:rotate-12 transition-all duration-300`} />
+                        <p className="text-xl font-black text-white">{item.value}</p>
+                        <p className="text-xs text-gray-400 font-medium">{item.label}</p>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -506,8 +478,12 @@ export default function Home() {
                   { icon: Phone, text: "+91 81061-42645", color: "emerald", href: "tel:+918106142645" },
                   { icon: MapPin, text: "Telangana, India", color: "purple", href: "#" }
                 ].map((item, idx) => (
-                  <a key={idx} href={item.href} className={`block p-3 rounded-xl border border-${item.color}-500/30 bg-${item.color}-950/40 hover:bg-${item.color}-950/60 hover:scale-105 hover:border-${item.color}-500/60 transition-all duration-300 group backdrop-blur-sm`}>
-                    <div className="flex items-center gap-2.5">
+                  <a 
+                    key={idx} 
+                    href={item.href} 
+                    className={`block relative p-3 rounded-xl border border-${item.color}-500/30 bg-${item.color}-950/40 hover:bg-${item.color}-950/60 hover:scale-105 hover:border-${item.color}-500/60 transition-all duration-300 group backdrop-blur-sm overflow-hidden`}
+                  >
+                    <div className="relative z-10 flex items-center gap-2.5">
                       <div className={`p-2 rounded-lg bg-${item.color}-500/10 border border-${item.color}-500/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300`}>
                         <item.icon className={`w-4 h-4 text-${item.color}-400`} />
                       </div>
@@ -522,23 +498,41 @@ export default function Home() {
                     { icon: Github, href: "https://github.com/KalyanRamGoparaboina", label: "GitHub", color: "purple" },
                     { icon: Linkedin, href: "https://www.linkedin.com/in/kalyan-ram-goparaboina-90719435a", label: "LinkedIn", color: "blue" }
                   ].map((social) => (
-                    <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer"
-                      className={`group p-3 rounded-xl border border-${social.color}-500/30 bg-${social.color}-950/40 hover:bg-${social.color}-950/60 hover:scale-110 hover:rotate-2 transition-all duration-300 flex items-center justify-center gap-2 backdrop-blur-sm`}>
-                      <social.icon className="w-4 h-4 group-hover:scale-125 transition-transform" />
-                      <span className="text-xs font-semibold">{social.label}</span>
+                    <a 
+                      key={social.label} 
+                      href={social.href} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className={`group relative p-3 rounded-xl border border-${social.color}-500/30 bg-${social.color}-950/40 hover:bg-${social.color}-950/60 hover:scale-110 hover:rotate-2 transition-all duration-300 flex items-center justify-center gap-2 backdrop-blur-sm overflow-hidden`}
+                    >
+                      <div className="relative z-10 flex items-center gap-2">
+                        <social.icon className="w-4 h-4 group-hover:scale-125 transition-transform" />
+                        <span className="text-xs font-semibold">{social.label}</span>
+                      </div>
                     </a>
                   ))}
                 </div>
 
                 {/* CTAs */}
                 <div className="space-y-2.5 pt-1">
-                  <a href="#contact" className="group w-full px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl font-bold hover:shadow-2xl hover:shadow-purple-500/50 transition-all hover:scale-105 flex items-center justify-center gap-2 hover:-translate-y-1 text-xs sm:text-sm">
-                    Contact Me
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
+                  <a 
+                    href="#contact" 
+                    className="group relative w-full px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl font-bold hover:shadow-2xl hover:shadow-purple-500/50 transition-all hover:scale-105 flex items-center justify-center gap-2 hover:-translate-y-1 text-xs sm:text-sm overflow-hidden"
+                  >
+                    <span className="relative z-10 flex items-center gap-2">
+                      Contact Me
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
+                    </span>
                   </a>
-                  <a href="/KalyanRamGoparaboina.pdf" download className="group w-full px-4 py-3 border-2 border-white/30 rounded-xl font-bold hover:bg-white hover:text-black transition-all hover:scale-105 flex items-center justify-center gap-2 text-xs sm:text-sm backdrop-blur-sm">
-                    <Download className="w-4 h-4 group-hover:animate-bounce" />
-                    Download Resume
+                  <a 
+                    href="/KalyanRamGoparaboina.pdf" 
+                    download 
+                    className="group relative w-full px-4 py-3 border-2 border-white/30 rounded-xl font-bold hover:bg-white hover:text-black transition-all hover:scale-105 flex items-center justify-center gap-2 text-xs sm:text-sm backdrop-blur-sm overflow-hidden"
+                  >
+                    <span className="relative z-10 flex items-center gap-2">
+                      <Download className="w-4 h-4 group-hover:animate-bounce" />
+                      Download Resume
+                    </span>
                   </a>
                 </div>
               </div>
@@ -557,7 +551,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* About Me Section - INCREASED SIZE */}
+        {/* About Me Section */}
         <section className="py-10 sm:py-16 px-4 sm:px-6 border-t border-white/10 bg-black/50 relative overflow-hidden">
            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-blue-500/5 blur-3xl pointer-events-none"></div>
            <div className="max-w-6xl mx-auto relative z-10">
@@ -577,7 +571,7 @@ export default function Home() {
                      <Sparkles className="w-5 h-5 text-purple-400 animate-pulse" />
                    </h2>
                    <p className="text-gray-300 text-sm sm:text-base leading-relaxed mb-4">
-                     I am a detail-oriented <strong>Computer Science Engineering graduate</strong> with a strong foundation in Python, Data Science, and Web Development. I have a proven track record of building functional applications, ranging from AI-based detection systems to full-stack web platforms.
+                     I am a detail-oriented <strong>Computer Science Engineering graduate</strong> with a strong foundation in Python, Data Science, and Data Analytics. I have a proven track record of building functional applications, ranging from AI-based detection systems to full-stack web platforms.
                    </p>
                    <p className="text-gray-400 text-sm leading-relaxed">
                      Passionate about leveraging Machine Learning and software engineering principles to solve real-world problems. Currently based in Telangana, India, and eager to drive innovation in the tech industry.
@@ -605,10 +599,15 @@ export default function Home() {
                 { icon: TrendingUp, label: "AI Accuracy", value: "90%+", color: "emerald" },
                 { icon: Rocket, label: "Dedication", value: "100%", color: "orange" }
               ].map((item, idx) => (
-                <div key={idx} className={`group p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-${item.color}-950/50 to-${item.color}-950/20 border border-${item.color}-500/30 hover:border-${item.color}-500/60 hover:scale-110 hover:-translate-y-2 transition-all duration-500 cursor-default backdrop-blur-sm`}>
-                  <item.icon className={`w-6 sm:w-7 h-6 sm:h-7 text-${item.color}-400 mb-2 group-hover:scale-125 group-hover:rotate-12 transition-all duration-300`} />
-                  <p className="text-3xl sm:text-4xl font-black text-white mb-1">{item.value}</p>
-                  <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">{item.label}</p>
+                <div 
+                  key={idx} 
+                  className={`group relative p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-${item.color}-950/50 to-${item.color}-950/20 border border-${item.color}-500/30 hover:border-${item.color}-500/60 hover:scale-110 hover:-translate-y-2 transition-all duration-500 cursor-default backdrop-blur-sm overflow-hidden`}
+                >
+                  <div className="relative z-10">
+                    <item.icon className={`w-6 sm:w-7 h-6 sm:h-7 text-${item.color}-400 mb-2 group-hover:scale-125 group-hover:rotate-12 transition-all duration-300`} />
+                    <p className="text-3xl sm:text-4xl font-black text-white mb-1">{item.value}</p>
+                    <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">{item.label}</p>
+                  </div>
                 </div>
               ))}
             </div>
@@ -625,7 +624,9 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
               
               {/* College */}
-              <div className="group md:col-span-2 p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-blue-950/50 to-purple-950/50 border border-blue-500/30 hover:border-blue-500/60 hover:scale-105 hover:-translate-y-2 transition-all duration-500 relative overflow-hidden backdrop-blur-sm">
+              <div 
+                className="group md:col-span-2 relative p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-blue-950/50 to-purple-950/50 border border-blue-500/30 hover:border-blue-500/60 hover:scale-105 hover:-translate-y-2 transition-all duration-500 overflow-hidden backdrop-blur-sm"
+              >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
                 <div className="relative z-10">
                   <div className="flex items-start gap-3 mb-4">
@@ -634,7 +635,7 @@ export default function Home() {
                     </div>
                     <div className="flex-1">
                       <h3 className="text-lg sm:text-xl font-bold text-white mb-1.5">B.E. Computer Science Engineering</h3>
-                      <p className="text-sm sm:text-base text-blue-300 font-semibold mb-1">Kamala Institute of Technology & Science, Telangana</p>
+                      <p className="text-sm sm:text-base text-blue-300 font-semibold mb-1">Kamala Institute of Technology, Telangana</p>
                       <p className="text-xs text-blue-400/80 italic mb-1">(Affiliated by JNTUH)</p>
                       <div className="flex flex-wrap items-center gap-3 mb-3">
                         <span className="px-2.5 py-1 rounded-full bg-blue-500/20 border border-blue-500/40 text-blue-300 text-xs font-bold">2021 - 2025</span>
@@ -670,7 +671,9 @@ export default function Home() {
               </div>
 
               {/* Intermediate */}
-              <div className="group p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-purple-950/50 to-pink-950/50 border border-purple-500/30 hover:border-purple-500/60 hover:scale-105 hover:-translate-y-2 transition-all duration-500 relative overflow-hidden backdrop-blur-sm">
+              <div 
+                className="group relative p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-purple-950/50 to-pink-950/50 border border-purple-500/30 hover:border-purple-500/60 hover:scale-105 hover:-translate-y-2 transition-all duration-500 overflow-hidden backdrop-blur-sm"
+              >
                 <div className="absolute top-0 right-0 w-28 h-28 bg-purple-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
                 <div className="relative z-10">
                   <div className="p-3 rounded-2xl bg-purple-500/10 border border-purple-500/30 w-fit mb-3 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
@@ -685,7 +688,9 @@ export default function Home() {
               </div>
 
               {/* SSC */}
-              <div className="group p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-cyan-950/50 to-blue-950/50 border border-cyan-500/30 hover:border-cyan-500/60 hover:scale-105 hover:-translate-y-2 transition-all duration-500 relative overflow-hidden backdrop-blur-sm">
+              <div 
+                className="group relative p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-cyan-950/50 to-blue-950/50 border border-cyan-500/30 hover:border-cyan-500/60 hover:scale-105 hover:-translate-y-2 transition-all duration-500 overflow-hidden backdrop-blur-sm"
+              >
                 <div className="absolute top-0 right-0 w-28 h-28 bg-cyan-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
                 <div className="relative z-10">
                   <div className="p-3 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 w-fit mb-3 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
@@ -700,7 +705,9 @@ export default function Home() {
               </div>
 
               {/* Data Science Intern */}
-              <div className="group md:col-span-2 p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-indigo-950/50 to-violet-950/50 border border-indigo-500/30 hover:border-indigo-500/60 hover:scale-105 hover:-translate-y-2 transition-all duration-500 relative overflow-hidden backdrop-blur-sm">
+              <div 
+                className="group md:col-span-2 relative p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-indigo-950/50 to-violet-950/50 border border-indigo-500/30 hover:border-indigo-500/60 hover:scale-105 hover:-translate-y-2 transition-all duration-500 overflow-hidden backdrop-blur-sm"
+              >
                 <div className="absolute top-0 left-0 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
                 <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-5">
                   <div>
@@ -736,7 +743,9 @@ export default function Home() {
               </div>
 
               {/* Networking Internship */}
-              <div className="group md:col-span-3 p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-emerald-950/50 to-teal-950/50 border border-emerald-500/30 hover:border-emerald-500/60 hover:scale-105 hover:-translate-y-2 transition-all duration-500 relative overflow-hidden backdrop-blur-sm">
+              <div 
+                className="group md:col-span-3 relative p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-emerald-950/50 to-teal-950/50 border border-emerald-500/30 hover:border-emerald-500/60 hover:scale-105 hover:-translate-y-2 transition-all duration-500 overflow-hidden backdrop-blur-sm"
+              >
                 <div className="absolute top-0 left-0 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
                 <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-5">
                   <div>
@@ -785,7 +794,9 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
               
               {/* Solar Power Generation Project */}
-              <div className="group md:col-span-2 relative p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-yellow-950/50 via-orange-950/50 to-yellow-950/50 border border-yellow-500/30 hover:border-yellow-500/60 hover:scale-105 hover:-translate-y-2 transition-all duration-500 overflow-hidden backdrop-blur-sm">
+              <div 
+                className="group md:col-span-2 relative p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-yellow-950/50 via-orange-950/50 to-yellow-950/50 border border-yellow-500/30 hover:border-yellow-500/60 hover:scale-105 hover:-translate-y-2 transition-all duration-500 overflow-hidden backdrop-blur-sm"
+              >
                 <div className="absolute top-0 right-0 w-48 h-48 bg-yellow-500/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
                 <div className="relative z-10">
                   <div className="flex flex-col sm:flex-row items-start justify-between gap-3 mb-4">
@@ -832,7 +843,7 @@ export default function Home() {
                   </div>
 
                   <div className="flex flex-wrap gap-1.5">
-                    {["Python", "ML", "Flask", "Cloud Analytics", "Dashboard"].map(tech => (
+                    {["Python", "ESP32", "ML", "Flask", "Cloud Analytics", "Dashboard"].map(tech => (
                       <span key={tech} className="px-2.5 py-1 rounded-lg bg-black/30 border border-yellow-500/20 text-yellow-300 text-xs font-medium hover:bg-black/50 hover:scale-110 transition-all duration-300 cursor-default">
                         {tech}
                       </span>
@@ -842,7 +853,9 @@ export default function Home() {
               </div>
 
               {/* AI Emotion Detection */}
-              <div className="group relative p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-rose-950/50 to-rose-950/20 border border-rose-500/30 hover:border-rose-500/60 hover:scale-105 hover:-translate-y-2 transition-all duration-500 overflow-hidden backdrop-blur-sm">
+              <div 
+                className="group relative p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-rose-950/50 to-rose-950/20 border border-rose-500/30 hover:border-rose-500/60 hover:scale-105 hover:-translate-y-2 transition-all duration-500 overflow-hidden backdrop-blur-sm"
+              >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-rose-500/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
                 <div className="relative z-10">
                   <div className="flex items-start justify-between mb-3">
@@ -881,7 +894,9 @@ export default function Home() {
               </div>
 
               {/* Bus Booking System */}
-              <div className="group relative p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-blue-950/50 to-blue-950/20 border border-blue-500/30 hover:border-blue-500/60 hover:scale-105 hover:-translate-y-2 transition-all duration-500 overflow-hidden backdrop-blur-sm">
+              <div 
+                className="group relative p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-blue-950/50 to-blue-950/20 border border-blue-500/30 hover:border-blue-500/60 hover:scale-105 hover:-translate-y-2 transition-all duration-500 overflow-hidden backdrop-blur-sm"
+              >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
                 <div className="relative z-10">
                   <div className="flex items-start justify-between mb-3">
@@ -919,7 +934,9 @@ export default function Home() {
               </div>
 
               {/* Handwritten to Text Converter */}
-              <div className="group relative p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-emerald-950/50 to-emerald-950/20 border border-emerald-500/30 hover:border-emerald-500/60 hover:scale-105 hover:-translate-y-2 transition-all duration-500 overflow-hidden backdrop-blur-sm">
+              <div 
+                className="group relative p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-emerald-950/50 to-emerald-950/20 border border-emerald-500/30 hover:border-emerald-500/60 hover:scale-105 hover:-translate-y-2 transition-all duration-500 overflow-hidden backdrop-blur-sm"
+              >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
                 <div className="relative z-10">
                   <div className="flex items-start justify-between mb-3">
@@ -957,7 +974,9 @@ export default function Home() {
               </div>
 
               {/* Restaurant Menu Platform */}
-              <div className="group relative p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-violet-950/50 to-violet-950/20 border border-violet-500/30 hover:border-violet-500/60 hover:scale-105 hover:-translate-y-2 transition-all duration-500 overflow-hidden backdrop-blur-sm">
+              <div 
+                className="group relative p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-violet-950/50 to-violet-950/20 border border-violet-500/30 hover:border-violet-500/60 hover:scale-105 hover:-translate-y-2 transition-all duration-500 overflow-hidden backdrop-blur-sm"
+              >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-violet-500/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
                 <div className="relative z-10">
                   <div className="flex items-start justify-between mb-3">
@@ -1025,7 +1044,10 @@ export default function Home() {
                   ]
                 }
               ].map((section, idx) => (
-                <div key={idx} className="group p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-neutral-900/80 to-neutral-900/40 border border-white/10 hover:border-white/20 hover:scale-105 transition-all duration-500 relative overflow-hidden backdrop-blur-sm">
+                <div 
+                  key={idx} 
+                  className="group relative p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-neutral-900/80 to-neutral-900/40 border border-white/10 hover:border-white/20 hover:scale-105 transition-all duration-500 overflow-hidden backdrop-blur-sm"
+                >
                   <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
                   <div className="relative z-10">
                     <h3 className="text-lg sm:text-xl font-bold text-white mb-5 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-purple-400 transition-all duration-500">
@@ -1057,7 +1079,9 @@ export default function Home() {
             </div>
 
             {/* Soft Skills Section */}
-             <div className="group p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-neutral-900/80 to-neutral-900/40 border border-white/10 hover:border-white/20 hover:scale-[1.02] transition-all duration-500 relative overflow-hidden backdrop-blur-sm mb-12">
+             <div 
+               className="group relative p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-neutral-900/80 to-neutral-900/40 border border-white/10 hover:border-white/20 hover:scale-[1.02] transition-all duration-500 overflow-hidden backdrop-blur-sm mb-12"
+             >
                <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/5 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
                <div className="relative z-10">
                  <h3 className="text-lg sm:text-xl font-bold text-white mb-5 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-green-400 group-hover:to-teal-400 transition-all duration-500 flex items-center gap-2">
@@ -1087,7 +1111,7 @@ export default function Home() {
                </div>
              </div>
 
-            {/* Certifications (EXACT DESIGN RESTORED) */}
+            {/* Certifications */}
             <div className="relative">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
