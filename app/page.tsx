@@ -1066,6 +1066,217 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Project Spotlight: Mana Aaharam (Live Demo) */}
+        <section className="py-12 sm:py-16 px-4 sm:px-6 border-t border-white/10 bg-black/40 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+          <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-green-500/10 rounded-full blur-[90px] pointer-events-none"></div>
+
+          <div className="max-w-6xl mx-auto relative z-10">
+            {/* Section Header */}
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-3 text-white hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-emerald-400 hover:to-green-500 transition-all duration-500 inline-block cursor-default">
+              Dream App to Build
+            </h2>
+            <p className="text-sm text-gray-400 mb-10">Production-ready applications showcasing Data Science, AI and Python Full-Stack</p>
+
+            <div className="flex flex-col lg:flex-row items-center gap-10 sm:gap-14">
+
+              {/* Left: Project Info */}
+              <div className="flex-1 space-y-6 sm:space-y-8 text-center lg:text-left">
+
+                <div className="space-y-2">
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white leading-tight">
+                    Mana Aaharam
+                  </h2>
+                  <h3 className="text-lg sm:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-green-500">
+                    Food Waste Reduction Platform
+                  </h3>
+                </div>
+
+                <p className="text-gray-400 text-sm leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                  A comprehensive ecosystem connecting restaurants, event organizers, and donors with NGOs to redistribute excess food. Features <span className="text-white font-bold">real-time geolocation tracking</span>, automated inventory alerts, and a dynamic dashboard for seamless logistics tracking.
+                </p>
+
+                <div className="grid grid-cols-2 gap-4 max-w-md mx-auto lg:mx-0">
+                  <div className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-emerald-500/10 hover:border-emerald-500/30 transition-all group">
+                    <Target className="w-6 h-6 text-emerald-400 mb-2 group-hover:scale-110 transition-transform" />
+                    <p className="text-xs text-gray-400 uppercase tracking-widest font-bold">Latency</p>
+                    <p className="text-lg font-black text-white">Real-time</p>
+                  </div>
+                  <div className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-emerald-500/10 hover:border-emerald-500/30 transition-all group">
+                    <Users className="w-6 h-6 text-emerald-400 mb-2 group-hover:scale-110 transition-transform" />
+                    <p className="text-xs text-gray-400 uppercase tracking-widest font-bold">Impact</p>
+                    <p className="text-lg font-black text-white">Community</p>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
+                  <a href="#mana-demo" className="px-8 py-4 rounded-xl bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white font-bold shadow-xl shadow-emerald-500/20 hover:shadow-emerald-500/40 hover:-translate-y-1 transition-all flex items-center gap-2.5 group">
+                    <ExternalLink className="w-5 h-5 group-hover:rotate-45 transition-transform" />
+                    <span>View Prototype</span>
+                  </a>
+                  <a href="https://github.com/KalyanRamGoparaboina/Mana-Aaharam" target="_blank" rel="noopener noreferrer" className="px-8 py-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold hover:-translate-y-1 transition-all flex items-center gap-2.5">
+                    <Github className="w-5 h-5" />
+                    <span>Source Code</span>
+                  </a>
+                </div>
+              </div>
+
+              {/* Right: Mock Browser / Live Demo Visual */}
+              <div className="flex-1 w-full max-w-xl mx-auto perspective-1000">
+                <div className="relative rounded-xl bg-gray-900 border border-gray-800 shadow-2xl overflow-hidden transform hover:rotate-y-2 transition-transform duration-700">
+                  {/* Browser Toolbar styling for consistency */}
+                  <div className="flex items-center gap-3 px-4 py-3 bg-black/50 border-b border-white/5">
+                    <div className="flex gap-1.5">
+                      <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
+                      <div className="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                      <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
+                    </div>
+                    <div className="flex-1 flex justify-center">
+                      <div className="px-4 py-1 rounded-md bg-white/5 text-[10px] text-gray-500 font-mono border border-white/5 flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                        mana-aaharam.live/dashboard
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Mock Screen Content */}
+                  <div className="relative aspect-[4/3] bg-[#0f1115] p-4 flex flex-col gap-3 group">
+                    {/* Mock Header */}
+                    <div className="flex justify-between items-center mb-2">
+                      <div className="w-24 h-6 rounded-md bg-white/10"></div>
+                      <div className="flex gap-2">
+                        <div className="w-8 h-8 rounded-full bg-white/10"></div>
+                        <div className="w-8 h-8 rounded-full bg-white/10"></div>
+                      </div>
+                    </div>
+
+                    {/* Mock Dashboard Grid */}
+                    <div className="flex h-full bg-[#0f1115] text-white overflow-hidden font-sans">
+
+                      {/* Sidebar */}
+                      <div className="w-16 sm:w-20 bg-[#1a1d24] border-r border-white/5 flex flex-col items-center py-4 gap-4 flex-shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center mb-2">
+                          <Leaf className="w-4 h-4 text-white" />
+                        </div>
+                        <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-500">
+                          <Target className="w-5 h-5" />
+                        </div>
+                        <div className="p-2 rounded-lg hover:bg-white/5 text-gray-400">
+                          <MapPin className="w-5 h-5" />
+                        </div>
+                        <div className="p-2 rounded-lg hover:bg-white/5 text-gray-400">
+                          <TrendingUp className="w-5 h-5" />
+                        </div>
+                        <div className="mt-auto p-2 rounded-lg hover:bg-white/5 text-gray-400">
+                          <User className="w-5 h-5" />
+                        </div>
+                      </div>
+
+                      {/* Main Content */}
+                      <div className="flex-1 flex flex-col min-w-0">
+                        {/* Header */}
+                        <div className="h-12 border-b border-white/5 flex items-center justify-between px-4">
+                          <span className="text-xs font-bold text-gray-400">Live Dashboard</span>
+                          <div className="flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                            <span className="text-[10px] uppercase font-bold text-green-500 tracking-wider">System Online</span>
+                          </div>
+                        </div>
+
+                        {/* Content Scroll Area */}
+                        <div className="flex-1 p-4 overflow-hidden relative">
+
+                          {/* Stats Row */}
+                          <div className="grid grid-cols-2 gap-3 mb-4">
+                            <div className="p-3 rounded-xl bg-[#1a1d24] border border-white/5 relative overflow-hidden group">
+                              <div className="absolute right-0 top-0 p-3 opacity-10">
+                                <Leaf className="w-12 h-12 text-emerald-500" />
+                              </div>
+                              <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-1">Food Saved</p>
+                              <p className="text-xl font-black text-white">1,240 <span className="text-xs font-medium text-emerald-500">kg</span></p>
+                            </div>
+                            <div className="p-3 rounded-xl bg-[#1a1d24] border border-white/5 relative overflow-hidden">
+                              <div className="absolute right-0 top-0 p-3 opacity-10">
+                                <Users className="w-12 h-12 text-blue-500" />
+                              </div>
+                              <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-1">Active NGOs</p>
+                              <p className="text-xl font-black text-white">42</p>
+                            </div>
+                          </div>
+
+                          {/* Map & List Split */}
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 h-32 sm:h-40">
+
+                            {/* Live Map Area */}
+                            <div className="sm:col-span-2 rounded-xl bg-[#1a1d24] border border-white/5 relative overflow-hidden flex flex-col">
+                              <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,_rgba(16,185,129,0.1),_transparent_70%)]"></div>
+                              <div className="absolute inset-0 p-4">
+                                {/* Map Pins */}
+                                <div className="absolute top-1/4 left-1/4 flex flex-col items-center gap-1 group/pin cursor-default">
+                                  <div className="relative">
+                                    <div className="w-3 h-3 bg-emerald-500 rounded-full animate-ping absolute inset-0"></div>
+                                    <div className="w-3 h-3 bg-emerald-500 rounded-full relative border-2 border-[#1a1d24]"></div>
+                                  </div>
+                                  <div className="px-2 py-0.5 rounded bg-black/80 text-[8px] font-bold text-white opacity-0 group-hover/pin:opacity-100 transition-opacity whitespace-nowrap border border-white/10">
+                                    Donation #128
+                                  </div>
+                                </div>
+                                <div className="absolute bottom-1/3 right-1/3 flex flex-col items-center gap-1 group/pin cursor-default" style={{ animationDelay: '1s' }}>
+                                  <div className="relative">
+                                    <div className="w-3 h-3 bg-orange-500 rounded-full animate-ping absolute inset-0" style={{ animationDelay: '0.5s' }}></div>
+                                    <div className="w-3 h-3 bg-orange-500 rounded-full relative border-2 border-[#1a1d24]"></div>
+                                  </div>
+                                  <div className="px-2 py-0.5 rounded bg-black/80 text-[8px] font-bold text-white opacity-0 group-hover/pin:opacity-100 transition-opacity whitespace-nowrap border border-white/10">
+                                    Request #094
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="mt-auto p-2 bg-black/20 backdrop-blur-sm border-t border-white/5 flex justify-between items-center px-3">
+                                <span className="text-[10px] font-bold text-emerald-400 flex items-center gap-1">
+                                  <MapPin className="w-3 h-3" /> Live Tracking
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Recent Activity List */}
+                            <div className="hidden sm:flex col-span-1 rounded-xl bg-[#1a1d24] border border-white/5 flex-col p-3 overflow-hidden">
+                              <p className="text-[10px] text-gray-500 font-bold uppercase mb-2">Recent</p>
+                              <div className="space-y-2">
+                                <div className="flex items-center gap-2">
+                                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                                  <div>
+                                    <p className="text-[10px] font-bold text-white">Rice Packs</p>
+                                    <p className="text-[8px] text-gray-500">2m ago • Hyderabad</p>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
+                                  <div>
+                                    <p className="text-[10px] font-bold text-white">Pickup Done</p>
+                                    <p className="text-[8px] text-gray-500">15m ago • NGO</p>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                                  <div>
+                                    <p className="text-[10px] font-bold text-white">Veg Curries</p>
+                                    <p className="text-[8px] text-gray-500">45m ago • Banquet</p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Technical Expertise */}
         <section id="skills" className="py-12 sm:py-16 px-4 sm:px-6 border-t border-white/10">
           <div className="max-w-6xl mx-auto">
