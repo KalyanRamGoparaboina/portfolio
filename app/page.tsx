@@ -437,7 +437,7 @@ export default function Home() {
                         <span className="text-xs font-bold text-emerald-300 uppercase tracking-wide">Education</span>
                       </div>
                       <h3 className="text-sm sm:text-base font-bold text-white mb-0.5">B.E. Computer Science & Engineering</h3>
-                      <p className="text-xs text-gray-400">Kamala Institute of Technology and Science, Telangana</p>
+                      <p className="text-xs text-gray-400">Kamala Institute of Technology and Science, Telangana (JNTUH)</p>
                       <p className="text-xs text-gray-500 mt-0.5">2021 - 2025</p>
                     </div>
                     <div className="flex items-center justify-center">
@@ -636,7 +636,7 @@ export default function Home() {
                     </div>
                     <div className="flex-1">
                       <h3 className="text-xl sm:text-2xl font-black text-white mb-2 tracking-tight">B.E. Computer Science & Engineering</h3>
-                      <p className="text-base sm:text-lg text-blue-300 font-bold mb-1">Kamala Institute of Technology and Science</p>
+                      <p className="text-base sm:text-lg text-blue-300 font-bold mb-1">Kamala Institute of Technology and Science, Telangana (JNTUH)</p>
                       <div className="flex flex-wrap items-center gap-3 mt-3">
                         <span className="px-3 py-1 rounded-full bg-blue-500/20 border border-blue-500/40 text-blue-300 text-xs font-black uppercase tracking-wider">2021 - 2025</span>
                         <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10">
