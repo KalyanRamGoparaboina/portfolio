@@ -93,7 +93,7 @@ export default function Home() {
     title: "Kalyan Ram Goparaboina - Data Scientist & AI Specialist | Python Full-Stack Developer Portfolio",
     description: "Kalyan Ram Goparaboina - Computer Science Graduate from Telangana specializing in Data Science, AI/ML, Deep Learning, and Python Full-Stack Development. Expert in Machine Learning, OpenCV, Flask, React, Computer Vision, and Cloud Technologies. Available for hire - Fresh Graduate 2025.",
     keywords: "Kalyan Ram Goparaboina, Kalyanram Goparaboina, Kalyan Goparaboina, Data Scientist India, AI Specialist, Machine Learning Engineer, Python Developer, Flask Developer, React Developer, Computer Vision Expert, Deep Learning, Data Science, AI ML Developer, Full Stack Python Developer, Telangana Developer, Fresh Graduate 2025, Kamala Institute Alumni, AI Jobs India, Data Science Jobs, Python Jobs",
-    url: "https://kalyanramgoparaboina.com",
+    url: "https://www.kalyanramgoparaboina.in/",
     image: "/og-image.jpg"
   };
 
