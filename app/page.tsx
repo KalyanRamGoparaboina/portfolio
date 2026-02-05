@@ -526,7 +526,7 @@ export default function Home() {
                     </span>
                   </a>
                   <a
-                    href="/Kalyan_Ram_Resume.pdf"
+                    href="/Kalyan%20Data%20Science%202.pdf"
                     download
                     className="group relative w-full px-4 py-3 border-2 border-white/30 rounded-xl font-bold hover:bg-white hover:text-black transition-all hover:scale-105 flex items-center justify-center gap-2 text-xs sm:text-sm backdrop-blur-sm overflow-hidden"
                   >
@@ -1560,7 +1560,7 @@ export default function Home() {
               {/* Download Resume CTA */}
               <div className="text-center space-y-4">
                 <a
-                  href="/Kalyan_Ram_Resume.pdf"
+                  href="/Kalyan%20Data%20Science%202.pdf"
                   download
                   className="group inline-flex items-center gap-3 px-8 sm:px-12 py-4 sm:py-5 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-2xl font-black text-base sm:text-lg hover:shadow-2xl hover:shadow-purple-500/50 hover:scale-110 transition-all duration-500 relative overflow-hidden"
                   aria-label="Download resume"
