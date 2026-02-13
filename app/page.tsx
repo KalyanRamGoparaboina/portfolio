@@ -526,7 +526,7 @@ export default function Home() {
                     </span>
                   </a>
                   <a
-                    href="/Kalyan%20Data%20Science%202.pdf"
+                    href="/Kalyan%20Ram%20Goparaboina%20resume.pdf"
                     download
                     className="group relative w-full px-4 py-3 border-2 border-white/30 rounded-xl font-bold hover:bg-white hover:text-black transition-all hover:scale-105 flex items-center justify-center gap-2 text-xs sm:text-sm backdrop-blur-sm overflow-hidden"
                   >
